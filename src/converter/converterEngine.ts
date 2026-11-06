@@ -54,9 +54,9 @@ function calculateBitrate(
 ): number {
   if (fitSquare) {
     // WhatsApp animated stickers require strict < 500 KB total file size.
-    // 720 kbps guarantees a 2-4s sticker stays around 180 KB - 360 KB with clean H.264 fidelity
-    if (quality === 'compact') return 480_000;
-    return 720_000;
+    // 550 kbps produces an ultra-compact ~120 KB - 240 KB file size that sends instantly
+    if (quality === 'compact') return 360_000;
+    return 550_000;
   }
   const pixelsPerSec = width * height * fps;
   let multiplier = 0.20;

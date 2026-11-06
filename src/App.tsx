@@ -205,6 +205,9 @@ export default function App() {
 
       {/* Main Viewport Container */}
       <main className="flex-1 min-h-0 flex flex-col items-center justify-center p-4 sm:p-6 overflow-hidden relative">
+        {/* Subtle Ambient Studio Lighting */}
+        <div className="absolute w-[600px] h-[600px] rounded-full bg-blue-600/[0.07] blur-[140px] pointer-events-none -translate-y-8 select-none" />
+
         {/* Fullscreen Drop Overlay */}
         {isGlobalDragging && (
           <div className="absolute inset-4 z-40 bg-neutral-950/90 border-2 border-dashed border-white rounded-3xl flex items-center justify-center backdrop-blur-xs pointer-events-none">
@@ -214,7 +217,7 @@ export default function App() {
 
         {items.length === 0 ? (
           /* Empty / Initial Screen: Centered glassy upload button */
-          <div className="w-full max-w-md sm:max-w-lg flex items-center justify-center">
+          <div className="w-full max-w-md sm:max-w-lg flex items-center justify-center relative z-10">
             <DropZone
               onFilesSelected={handleFilesSelected}
               disabled={isProcessing}

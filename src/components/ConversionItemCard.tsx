@@ -64,9 +64,12 @@ export const ConversionItemCard: React.FC<ConversionItemCardProps> = ({
   // Hero Showcase Card (Single File Focused View)
   if (variant === 'hero') {
     return (
-      <div className="w-full max-w-sm sm:max-w-md mx-auto bg-gradient-to-b from-white/[0.07] via-white/[0.03] to-white/[0.01] border border-white/10 backdrop-blur-2xl shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_20px_50px_rgba(0,0,0,0.8)] rounded-3xl p-5 sm:p-6 flex flex-col items-center gap-4 transition-all duration-200">
-        {/* Compact Video / Image Preview */}
-        <div className="w-full aspect-square max-h-56 rounded-2xl overflow-hidden bg-black border border-neutral-800/80 flex items-center justify-center relative">
+      <div className="relative w-full max-w-sm sm:max-w-md mx-auto bg-gradient-to-b from-neutral-900/80 via-neutral-950/90 to-black/95 border border-white/[0.12] backdrop-blur-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),inset_0_1px_1px_rgba(255,255,255,0.12)] rounded-3xl p-5 sm:p-6 flex flex-col items-center gap-4 transition-all duration-200 overflow-hidden">
+        {/* Subtle Top Specular Sheen Line */}
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" />
+
+        {/* Compact Video / Image Preview with WhatsApp sticker frame */}
+        <div className="w-full aspect-square max-h-56 rounded-2xl overflow-hidden bg-black border border-white/10 shadow-inner flex items-center justify-center relative">
           {item.status === 'completed' && item.result ? (
             <video
               src={item.result.url}
@@ -78,7 +81,7 @@ export const ConversionItemCard: React.FC<ConversionItemCardProps> = ({
             />
           ) : item.status === 'converting' ? (
             <div className="flex flex-col items-center gap-3 text-neutral-400">
-              <Loader2 className="w-7 h-7 animate-spin text-white" />
+              <Loader2 className="w-7 h-7 animate-spin text-blue-400" />
               <span className="text-xs font-mono text-neutral-300">
                 {item.progress?.percent || 0}%
               </span>
@@ -94,7 +97,7 @@ export const ConversionItemCard: React.FC<ConversionItemCardProps> = ({
         {item.status === 'converting' && (
           <div className="w-full bg-neutral-900 h-1.5 rounded-full overflow-hidden">
             <div
-              className="bg-white h-full transition-all duration-150 rounded-full"
+              className="bg-blue-500 h-full transition-all duration-150 rounded-full"
               style={{ width: `${item.progress?.percent || 0}%` }}
             />
           </div>
@@ -109,11 +112,11 @@ export const ConversionItemCard: React.FC<ConversionItemCardProps> = ({
 
         {/* File Name & Converted Dimensions / Size */}
         <div className="w-full flex items-center justify-between px-1">
-          <span className="font-semibold text-sm sm:text-base text-white truncate max-w-[240px]">
+          <span className="font-semibold text-sm sm:text-base text-white truncate max-w-[200px]">
             {cleanName}.mp4
           </span>
           {item.result && (
-            <span className="text-xs font-mono text-neutral-400 tabular-nums">
+            <span className="text-xs font-mono text-blue-300 tabular-nums bg-blue-500/10 px-2 py-0.5 rounded-lg border border-blue-500/20">
               {item.result.width}×{item.result.height} · {formatBytes(item.result.fileSize)}
             </span>
           )}
@@ -124,7 +127,7 @@ export const ConversionItemCard: React.FC<ConversionItemCardProps> = ({
           <div className="w-full flex items-center gap-2 pt-1">
             <button
               onClick={handleDownload}
-              className="flex-1 py-3 px-5 rounded-xl bg-blue-500 hover:bg-blue-400 text-white font-bold text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-blue-500/25 active:scale-[0.99]"
+              className="flex-1 py-3 px-5 rounded-xl bg-blue-500 hover:bg-blue-400 text-white font-bold text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-blue-500/30 active:scale-[0.99]"
             >
               <Download className="w-4 h-4 stroke-[2.5]" />
               <span>Download MP4</span>

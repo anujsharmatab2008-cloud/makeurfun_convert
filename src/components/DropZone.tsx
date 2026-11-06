@@ -107,23 +107,48 @@ export const DropZone: React.FC<DropZoneProps> = ({
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          className={`relative w-full max-w-md sm:max-w-lg p-10 sm:p-14 rounded-3xl transition-all duration-300 cursor-pointer flex flex-col items-center justify-center gap-6 text-center group overflow-hidden border backdrop-blur-2xl ${
+          className={`relative w-full max-w-md sm:max-w-[480px] p-8 sm:p-10 rounded-3xl transition-all duration-300 cursor-pointer flex flex-col items-center justify-center text-center group overflow-hidden border backdrop-blur-2xl ${
             isDragOver
-              ? 'border-white/40 bg-white/[0.08] scale-[1.02] shadow-[inset_0_1px_2px_rgba(255,255,255,0.3),0_30px_70px_rgba(0,0,0,0.9),0_0_50px_rgba(59,130,246,0.2)]'
-              : 'border-white/10 hover:border-white/25 bg-gradient-to-b from-white/[0.07] via-white/[0.03] to-white/[0.01] hover:bg-white/[0.06] shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_20px_50px_rgba(0,0,0,0.8)] hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.25),0_25px_60px_rgba(0,0,0,0.9),0_0_35px_rgba(59,130,246,0.1)]'
+              ? 'border-blue-500/60 bg-blue-500/[0.08] scale-[1.02] shadow-[0_25px_60px_-10px_rgba(59,130,246,0.35),inset_0_1px_1px_rgba(255,255,255,0.3)]'
+              : 'border-white/[0.12] hover:border-blue-500/40 bg-gradient-to-b from-neutral-900/80 via-neutral-950/90 to-black/95 hover:bg-neutral-900/90 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),inset_0_1px_1px_rgba(255,255,255,0.12)] hover:shadow-[0_30px_70px_-10px_rgba(59,130,246,0.22),inset_0_1px_1px_rgba(255,255,255,0.2)]'
           }`}
         >
-          {/* Subtle Glass Sheen Top Layer */}
-          <div className="absolute inset-0 bg-gradient-to-br from-white/[0.08] via-transparent to-transparent pointer-events-none rounded-3xl" />
+          {/* Subtle Top Specular Sheen Line */}
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" />
 
-          {/* Glowing Icon */}
-          <div className="relative w-18 h-18 sm:w-20 sm:h-20 rounded-2xl bg-white text-black flex items-center justify-center group-hover:scale-105 group-active:scale-95 transition-all duration-300 shadow-xl shadow-white/10">
-            <Upload className="w-8 h-8 sm:w-9 sm:h-9 stroke-[2.2]" />
+          {/* Ambient Blue Radial Glow behind icon */}
+          <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-44 h-44 bg-blue-500/15 rounded-full blur-3xl group-hover:bg-blue-500/25 transition-all duration-500 pointer-events-none" />
+
+          {/* Refined Electric-Blue Glass Icon */}
+          <div className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-2xl bg-gradient-to-b from-blue-500/20 via-blue-500/10 to-blue-600/5 border border-blue-400/30 text-blue-400 flex items-center justify-center group-hover:scale-105 group-hover:text-blue-300 group-hover:border-blue-400/60 transition-all duration-300 shadow-[0_0_28px_rgba(59,130,246,0.25)] group-hover:shadow-[0_0_36px_rgba(59,130,246,0.4)]">
+            <Upload className="w-7 h-7 sm:w-8 sm:h-8 stroke-[2.2] group-hover:-translate-y-0.5 transition-transform duration-200" />
           </div>
 
-          <div className="relative">
-            <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white block drop-shadow-sm">
+          {/* Clean Typography */}
+          <div className="relative mt-5">
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white group-hover:text-white transition-colors">
               Choose WebP or GIF
+            </h2>
+            <p className="text-xs sm:text-sm text-neutral-400 font-normal mt-1.5">
+              or drag & drop your animation file
+            </p>
+          </div>
+
+          {/* Subtle Hairline Divider */}
+          <div className="w-full h-px bg-white/[0.07] my-5" />
+
+          {/* Professional Format Badges */}
+          <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 text-[11px] font-medium text-neutral-400 select-none">
+            <span className="px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/[0.06] text-neutral-300">
+              WhatsApp Sticker Ready
+            </span>
+            <span className="text-neutral-600">·</span>
+            <span className="px-2 py-1 rounded-lg bg-white/[0.04] border border-white/[0.06] text-neutral-300 font-mono">
+              512 × 512
+            </span>
+            <span className="text-neutral-600">·</span>
+            <span className="px-2 py-1 rounded-lg bg-white/[0.04] border border-white/[0.06] text-neutral-300 font-mono">
+              &lt; 500 KB
             </span>
           </div>
         </button>
