@@ -3,12 +3,13 @@ import { parseGIF, decompressFrames } from 'gifuct-js';
 
 export interface ConversionOptions {
   fps: 'auto' | 15 | 24 | 30 | 60;
-  scale: 50 | 70 | 75 | 100 | 150 | 200 | number;
+  scale: 50 | 60 | 70 | 75 | 100 | 150 | 200 | number;
   quality: 'high' | 'balanced' | 'compact';
   loopCount: number; // 1 to 10
   playbackSpeed: number; // 0.5 to 2.0
   reverseMode: 'normal' | 'reverse' | 'pingpong';
   bgColor: 'dark' | 'white' | 'black';
+  fitSquare?: boolean; // WhatsApp Sticker: 512x512 1:1 square with safe margins & <500KB size
 }
 
 export interface ConversionProgress {
@@ -43,20 +44,27 @@ function makeEven(dim: number): number {
 }
 
 // Quality to bitrate mapping based on resolution and framerate
+// Tuned for WhatsApp sticker limit (< 500 KB) while keeping sharp visual quality
 function calculateBitrate(
   width: number,
   height: number,
   fps: number,
-  quality: 'high' | 'balanced' | 'compact'
+  quality: 'high' | 'balanced' | 'compact',
+  fitSquare?: boolean
 ): number {
+  if (fitSquare) {
+    // WhatsApp animated stickers require strict < 500 KB total file size.
+    // 720 kbps guarantees a 2-4s sticker stays around 180 KB - 360 KB with clean H.264 fidelity
+    if (quality === 'compact') return 480_000;
+    return 720_000;
+  }
   const pixelsPerSec = width * height * fps;
-  let multiplier = 0.25; // high quality default
-  if (quality === 'high') multiplier = 0.30;
+  let multiplier = 0.20;
+  if (quality === 'high') multiplier = 0.25;
   if (quality === 'compact') multiplier = 0.08;
   
   const calculated = Math.round(pixelsPerSec * multiplier);
-  // Clamp between 500 kbps and 16 Mbps for pristine visual quality
-  return Math.min(16_000_000, Math.max(500_000, calculated));
+  return Math.min(8_000_000, Math.max(400_000, calculated));
 }
 
 // Decode GIF frames using gifuct-js
@@ -337,10 +345,38 @@ export async function convertToMp4(
     delayMs: Math.max(16, Math.round(f.delayMs / speed)),
   }));
 
-  // Target output dimensions with even numbers
-  const scaleFactor = options.scale / 100;
-  const targetWidth = makeEven(sourceWidth * scaleFactor);
-  const targetHeight = makeEven(sourceHeight * scaleFactor);
+  // WhatsApp Sticker mode (default: true) creates a 512x512 square canvas
+  // with a 440px safe content box (36px margin) so WhatsApp's rounded square sticker frame never clips heads or edges!
+  const isFitSquare = options.fitSquare !== false;
+
+  let targetWidth: number;
+  let targetHeight: number;
+  let drawX: number;
+  let drawY: number;
+  let drawWidth: number;
+  let drawHeight: number;
+
+  if (isFitSquare) {
+    targetWidth = 512;
+    targetHeight = 512;
+    const safeZone = 440;
+    const scaleRatio = Math.min(safeZone / sourceWidth, safeZone / sourceHeight);
+    drawWidth = makeEven(sourceWidth * scaleRatio);
+    drawHeight = makeEven(sourceHeight * scaleRatio);
+    drawX = Math.round((targetWidth - drawWidth) / 2);
+    drawY = Math.round((targetHeight - drawHeight) / 2);
+  } else {
+    const scaleFactor = (options.scale || 100) / 100;
+    targetWidth = makeEven(sourceWidth * scaleFactor);
+    targetHeight = makeEven(sourceHeight * scaleFactor);
+    drawWidth = targetWidth;
+    drawHeight = targetHeight;
+    drawX = 0;
+    drawY = 0;
+  }
+
+  const bgHex = options.bgColor === 'white' ? '#FFFFFF' : options.bgColor === 'black' ? '#000000' : '#0F172A';
+  const drawRect = { x: drawX, y: drawY, w: drawWidth, h: drawHeight, bgHex };
 
   // Determine framerate: enforce smooth 30 fps minimum (or user choice 60 / 24 / 15)
   let targetFps = 30;
@@ -357,7 +393,7 @@ export async function convertToMp4(
   onProgress?.({
     phase: 'encoding',
     percent: 32,
-    stageMessage: `Initializing smooth H.264 encoder (${targetWidth}x${targetHeight} @ ${targetFps}fps CFR)...`,
+    stageMessage: `Encoding WhatsApp sticker MP4 (${targetWidth}x${targetHeight} @ ${targetFps}fps)...`,
   });
 
   // Calculate duration
@@ -383,6 +419,8 @@ export async function convertToMp4(
         targetHeight,
         targetFps,
         options.quality,
+        drawRect,
+        isFitSquare,
         onProgress
       );
 
@@ -413,6 +451,7 @@ export async function convertToMp4(
     targetWidth,
     targetHeight,
     targetFps,
+    drawRect,
     onProgress
   );
 
@@ -441,6 +480,8 @@ async function encodeWithWebCodecs(
   height: number,
   fps: number,
   quality: 'high' | 'balanced' | 'compact',
+  drawRect: { x: number; y: number; w: number; h: number; bgHex: string },
+  isFitSquare: boolean,
   onProgress?: (progress: ConversionProgress) => void
 ): Promise<{ blob: Blob; totalEncodedFrames: number }> {
   const target = new ArrayBufferTarget();
@@ -455,7 +496,7 @@ async function encodeWithWebCodecs(
     firstTimestampBehavior: 'offset',
   });
 
-  const bitrate = calculateBitrate(width, height, fps, quality);
+  const bitrate = calculateBitrate(width, height, fps, quality, isFitSquare);
 
 // Helper to construct standard AVCDecoderConfigurationRecord (avcC box)
 // Windows Media Player (Films & TV) error 0xC00D5212 occurs if avcC is missing or malformed
@@ -642,8 +683,10 @@ await videoEncoder.configure({
     const currentTimeMs = (k / fps) * 1000;
     const activeCanvas = getCanvasForTime(currentTimeMs);
 
-    renderCtx.clearRect(0, 0, width, height);
-    renderCtx.drawImage(activeCanvas, 0, 0, width, height);
+    // Fill background solid color and draw centered within safe zone
+    renderCtx.fillStyle = drawRect.bgHex;
+    renderCtx.fillRect(0, 0, width, height);
+    renderCtx.drawImage(activeCanvas, drawRect.x, drawRect.y, drawRect.w, drawRect.h);
 
     const timestampUs = Math.round((k * 1_000_000) / fps);
 
@@ -701,6 +744,7 @@ async function encodeWithMediaRecorder(
   width: number,
   height: number,
   fps: number,
+  drawRect: { x: number; y: number; w: number; h: number; bgHex: string },
   onProgress?: (progress: ConversionProgress) => void
 ): Promise<{ blob: Blob; totalEncodedFrames: number }> {
   let mimeType = 'video/mp4; codecs="avc1.42E01E"';
@@ -762,8 +806,9 @@ async function encodeWithMediaRecorder(
       const currentTimeMs = k * frameIntervalMs;
       const activeCanvas = getCanvasForTime(currentTimeMs);
 
-      renderCtx.clearRect(0, 0, width, height);
-      renderCtx.drawImage(activeCanvas, 0, 0, width, height);
+      renderCtx.fillStyle = drawRect.bgHex;
+      renderCtx.fillRect(0, 0, width, height);
+      renderCtx.drawImage(activeCanvas, drawRect.x, drawRect.y, drawRect.w, drawRect.h);
 
       const percent = 35 + Math.round(((k + 1) / totalVideoFrames) * 60);
       onProgress?.({

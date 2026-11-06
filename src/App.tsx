@@ -9,12 +9,13 @@ import { Plus } from 'lucide-react';
 
 const HIGH_QUALITY_OPTIONS: ConversionOptions = {
   fps: 'auto',
-  scale: 60, // Reduced to 60% dimensions
-  quality: 'high', // High visual quality
+  scale: 60,
+  quality: 'high',
   loopCount: 1,
   playbackSpeed: 1.0,
   reverseMode: 'normal',
   bgColor: 'black',
+  fitSquare: true, // 512x512 with safe margin padding for WhatsApp Stickers
 };
 
 export default function App() {
