@@ -65,8 +65,8 @@ export const ConversionItemCard: React.FC<ConversionItemCardProps> = ({
   if (variant === 'hero') {
     return (
       <div className="w-full max-w-sm sm:max-w-md mx-auto bg-gradient-to-b from-white/[0.07] via-white/[0.03] to-white/[0.01] border border-white/10 backdrop-blur-2xl shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_20px_50px_rgba(0,0,0,0.8)] rounded-3xl p-5 sm:p-6 flex flex-col items-center gap-4 transition-all duration-200">
-        {/* Large Video / Image Preview */}
-        <div className="w-full aspect-square max-h-72 rounded-2xl overflow-hidden bg-black border border-neutral-800/80 flex items-center justify-center relative">
+        {/* Compact Video / Image Preview */}
+        <div className="w-full aspect-square max-h-56 rounded-2xl overflow-hidden bg-black border border-neutral-800/80 flex items-center justify-center relative">
           {item.status === 'completed' && item.result ? (
             <video
               src={item.result.url}
@@ -107,14 +107,14 @@ export const ConversionItemCard: React.FC<ConversionItemCardProps> = ({
           </p>
         )}
 
-        {/* File Name & Converted Size */}
+        {/* File Name & Converted Dimensions / Size */}
         <div className="w-full flex items-center justify-between px-1">
-          <span className="font-semibold text-sm sm:text-base text-white truncate max-w-[260px]">
+          <span className="font-semibold text-sm sm:text-base text-white truncate max-w-[240px]">
             {cleanName}.mp4
           </span>
           {item.result && (
             <span className="text-xs font-mono text-neutral-400 tabular-nums">
-              {formatBytes(item.result.fileSize)}
+              {item.result.width}×{item.result.height} · {formatBytes(item.result.fileSize)}
             </span>
           )}
         </div>
@@ -124,7 +124,7 @@ export const ConversionItemCard: React.FC<ConversionItemCardProps> = ({
           <div className="w-full flex items-center gap-2 pt-1">
             <button
               onClick={handleDownload}
-              className="flex-1 py-3 px-5 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-black font-bold text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-emerald-500/10 active:scale-[0.99]"
+              className="flex-1 py-3 px-5 rounded-xl bg-blue-500 hover:bg-blue-400 text-white font-bold text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-blue-500/25 active:scale-[0.99]"
             >
               <Download className="w-4 h-4 stroke-[2.5]" />
               <span>Download MP4</span>
@@ -188,7 +188,7 @@ export const ConversionItemCard: React.FC<ConversionItemCardProps> = ({
             {cleanName}.mp4
           </h4>
           <span className="text-xs text-neutral-400 font-mono tabular-nums">
-            {item.result ? formatBytes(item.result.fileSize) : formatBytes(item.file.size)}
+            {item.result ? `${item.result.width}×${item.result.height} · ${formatBytes(item.result.fileSize)}` : formatBytes(item.file.size)}
           </span>
         </div>
       </div>
@@ -213,7 +213,7 @@ export const ConversionItemCard: React.FC<ConversionItemCardProps> = ({
 
             <button
               onClick={handleDownload}
-              className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-black bg-emerald-400 hover:bg-emerald-300 rounded-xl transition-all cursor-pointer shadow-md shadow-emerald-500/10"
+              className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs font-bold text-white bg-blue-500 hover:bg-blue-400 rounded-xl transition-all cursor-pointer shadow-md shadow-blue-500/20"
               title="Download MP4"
             >
               <Download className="w-3.5 h-3.5 stroke-[2.5]" />

@@ -9,7 +9,7 @@ import { Plus } from 'lucide-react';
 
 const HIGH_QUALITY_OPTIONS: ConversionOptions = {
   fps: 'auto',
-  scale: 100, // 100% original size
+  scale: 60, // Reduced to 60% dimensions
   quality: 'high', // High visual quality
   loopCount: 1,
   playbackSpeed: 1.0,

@@ -3,7 +3,7 @@ import { parseGIF, decompressFrames } from 'gifuct-js';
 
 export interface ConversionOptions {
   fps: 'auto' | 15 | 24 | 30 | 60;
-  scale: 50 | 75 | 100 | 150 | 200;
+  scale: 50 | 70 | 75 | 100 | 150 | 200 | number;
   quality: 'high' | 'balanced' | 'compact';
   loopCount: number; // 1 to 10
   playbackSpeed: number; // 0.5 to 2.0

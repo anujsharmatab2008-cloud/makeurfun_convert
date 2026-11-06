@@ -125,7 +125,7 @@ export const ComparisonModal: React.FC<ComparisonModalProps> = ({
             <div className="flex flex-col bg-neutral-900/60 rounded-2xl p-4 border border-neutral-800">
               <div className="flex items-center justify-between mb-3 text-xs">
                 <span className="font-semibold text-white flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  <Check className="w-3.5 h-3.5 text-blue-400" />
                   Encoded Video (H.264 MP4)
                 </span>
                 <div className="flex items-center gap-2">
@@ -133,7 +133,7 @@ export const ComparisonModal: React.FC<ComparisonModalProps> = ({
                     {formatBytes(result.fileSize)}
                   </span>
                   {result.savedPercentage > 0 && (
-                    <span className="font-mono text-emerald-400 font-semibold tabular-nums">
+                    <span className="font-mono text-blue-400 font-semibold tabular-nums">
                       (-{result.savedPercentage}%)
                     </span>
                   )}
@@ -219,7 +219,7 @@ export const ComparisonModal: React.FC<ComparisonModalProps> = ({
 
           <button
             onClick={handleDownload}
-            className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-black bg-emerald-400 hover:bg-emerald-300 rounded-xl transition-all shadow-md shadow-emerald-500/10"
+            className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-blue-500 hover:bg-blue-400 rounded-xl transition-all shadow-md shadow-blue-500/20 cursor-pointer"
           >
             <Download className="w-3.5 h-3.5" />
             <span>Download MP4</span>

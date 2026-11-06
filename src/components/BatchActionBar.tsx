@@ -55,7 +55,7 @@ export const BatchActionBar: React.FC<BatchActionBarProps> = ({
           <button
             onClick={handleDownloadZip}
             disabled={isZipping}
-            className="flex items-center gap-1.5 px-3 py-1.5 font-bold text-black bg-emerald-400 hover:bg-emerald-300 disabled:opacity-50 rounded-xl transition-all cursor-pointer shadow-sm shadow-emerald-500/10"
+            className="flex items-center gap-1.5 px-3 py-1.5 font-bold text-white bg-blue-500 hover:bg-blue-400 disabled:opacity-50 rounded-xl transition-all cursor-pointer shadow-sm shadow-blue-500/20"
           >
             {isZipping ? <Loader2 className="w-3 h-3 animate-spin" /> : <Archive className="w-3 h-3" />}
             <span>Download all (.zip)</span>
