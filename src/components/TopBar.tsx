@@ -14,9 +14,14 @@ export const TopBar: React.FC = () => {
         </div>
 
         {/* Prominent, bold brand mark */}
-        <span className="text-2xl sm:text-[26px] font-black tracking-tight text-white antialiased select-none">
-          makeurfun
-        </span>
+        <div className="flex items-center gap-2 select-none">
+          <span className="text-2xl sm:text-[28px] font-black tracking-tight text-white antialiased [-webkit-text-stroke:0.4px_#ffffff]">
+            MakeUrFun
+          </span>
+          <span className="text-2xl sm:text-[28px] font-black tracking-tight text-blue-500 antialiased [-webkit-text-stroke:0.4px_#3b82f6] drop-shadow-[0_0_15px_rgba(59,130,246,0.4)]">
+            Studio
+          </span>
+        </div>
       </div>
     </header>
   );

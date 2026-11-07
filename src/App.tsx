@@ -5,7 +5,7 @@ import { ConversionItemCard, QueueItem } from './components/ConversionItemCard';
 import { BatchActionBar } from './components/BatchActionBar';
 import { ComparisonModal } from './components/ComparisonModal';
 import { convertToMp4, ConversionOptions } from './converter/converterEngine';
-import { Plus } from 'lucide-react';
+import { Plus, ExternalLink } from 'lucide-react';
 
 const HIGH_QUALITY_OPTIONS: ConversionOptions = {
   fps: 'auto',
@@ -216,13 +216,37 @@ export default function App() {
         )}
 
         {items.length === 0 ? (
-          /* Empty / Initial Screen: Centered glassy upload button */
-          <div className="w-full max-w-md sm:max-w-lg flex items-center justify-center relative z-10">
+          /* Empty / Initial Screen: Centered glassy upload button + Website Portal Button */
+          <div className="w-full max-w-md sm:max-w-lg flex flex-col items-center justify-center gap-4 sm:gap-5 relative z-10">
             <DropZone
               onFilesSelected={handleFilesSelected}
               disabled={isProcessing}
               variant="hero"
             />
+
+            {/* Center screen button linking to https://makeurfun.pages.dev/ with green website logo */}
+            <a
+              href="https://makeurfun.pages.dev/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-gradient-to-b from-neutral-900/90 via-neutral-950/90 to-black/95 hover:bg-neutral-900 border border-white/[0.12] hover:border-emerald-500/50 backdrop-blur-2xl shadow-[0_15px_35px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.1)] hover:shadow-[0_0_28px_rgba(16,185,129,0.3)] transition-all duration-300 cursor-pointer select-none active:scale-[0.98]"
+              title="Visit makeurfun.pages.dev"
+            >
+              {/* Green Website Logo */}
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl overflow-hidden bg-black/60 border border-emerald-500/30 shrink-0 shadow-[0_0_14px_rgba(16,185,129,0.4)] flex items-center justify-center">
+                <img
+                  src="/assets/makeurfun_logo.png"
+                  alt="makeurfun logo"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+
+              {/* Text & Icon */}
+              <span className="text-sm font-semibold text-white tracking-tight group-hover:text-emerald-300 transition-colors">
+                makeurfun.pages.dev
+              </span>
+              <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-neutral-400 group-hover:text-emerald-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200" />
+            </a>
           </div>
         ) : items.length === 1 ? (
           /* Single File Focused View (Showcase Card) */
@@ -286,8 +310,17 @@ export default function App() {
       )}
 
       {/* Professional subtle copyright footer */}
-      <footer className="h-8 shrink-0 flex items-center justify-center text-[11px] text-neutral-600 tracking-wide select-none">
-        <span>© {new Date().getFullYear()} makeurfun. All rights reserved.</span>
+      <footer className="h-8 shrink-0 flex items-center justify-center gap-1.5 text-[11px] text-neutral-600 tracking-wide select-none">
+        <span>© {new Date().getFullYear()}</span>
+        <a
+          href="https://makeurfun.pages.dev/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-neutral-500 hover:text-neutral-300 transition-colors"
+        >
+          makeurfun.pages.dev
+        </a>
+        <span>· All rights reserved.</span>
       </footer>
     </div>
   );
